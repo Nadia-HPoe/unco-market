@@ -196,11 +196,17 @@ document
           Accept: "application/json",
         },
       });
+      let result;
+      const contentType = response.headers.get("content-type");
 
-      const result = await response.json();
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        result = await response.text();
+      }
 
       if (!response.ok) {
-        throw new Error(result.message || "Server error");
+        throw new Error(result || "Server error");
       }
 
       if (successEl) successEl.textContent = "Message sent successfully!";
